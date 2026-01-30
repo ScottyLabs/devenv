@@ -4,7 +4,7 @@ set -euo pipefail
 TEAM="$1"
 BAO_ADDR="$2"
 
-if [ -z "$BAO_TOKEN" ]; then
+if [ -z "${BAO_TOKEN:-}" ]; then
   export BAO_ADDR="$BAO_ADDR"
   echo "Authenticating to OpenBao..."
   BAO_TOKEN=$(bao login -method=oidc -token-only 2>/dev/null) || true
@@ -16,5 +16,6 @@ if [ -z "$BAO_TOKEN" ]; then
 
   export BAO_TOKEN
   echo "Loading secrets for team: $TEAM"
+  # shellcheck disable=SC2046
   eval $(bao kv get -format=json "secret/$TEAM/dev/env" 2>/dev/null | jq -r '.data.data | to_entries[] | "export \(.key)=\"\(.value)\""')
 fi
