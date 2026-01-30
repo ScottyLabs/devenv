@@ -35,7 +35,12 @@ in
     packages = [ loadSecretsScript ];
 
     enterShell = ''
-      source <(load-secrets "${cfg.team}" "${cfg.bao.addr}")
+      load-secrets "${cfg.team}" "${cfg.bao.addr}"
+      if [ -f .env ]; then
+        set -a
+        source .env
+        set +a
+      fi
     '';
   };
 }
