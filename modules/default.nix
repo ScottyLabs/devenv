@@ -1,8 +1,5 @@
 { ... }:
 
 {
-  imports = [
-    ./secrets.nix
-    ./git-hooks.nix
-  ];
+  imports = [ ./secrets.nix ];
 }
