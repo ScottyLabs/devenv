@@ -10,6 +10,7 @@ in
     ./rust.nix
     ./bun.nix
     ./postgres.nix
+    ./sqlite.nix
     ./secrets.nix
   ];
 
