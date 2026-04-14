@@ -21,20 +21,14 @@ in
   };
 
   config = lib.mkIf (config.scottylabs.enable && cfg.enable) {
-    packages = [ pkgs.secretspec pkgs.openbao ];
+    packages = [ pkgs.openbao ];
 
-    env = {
-      BAO_ADDR = "https://${cfg.host}";
-      SECRETSPEC_PROVIDER = "vault://${cfg.host}/secret";
-      SECRETSPEC_PROFILE = cfg.profile;
+    env.BAO_ADDR = "https://${cfg.host}";
+
+    secretspec = {
+      enable = true;
+      provider = "vault://${cfg.host}/secret";
+      profile = cfg.profile;
     };
-
-    enterShell = ''
-      if [ -f secretspec.toml ]; then
-        if ! secretspec check 2>/dev/null; then
-          echo "Secrets not loaded. Run 'bao login -method=oidc' then 'secretspec check' to set up secrets."
-        fi
-      fi
-    '';
   };
 }
