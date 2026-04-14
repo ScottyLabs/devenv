@@ -1,45 +1,39 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ pkgs, lib, config, ... }:
 
 let
-  cfg = config.scottylabs;
-  loadSecretsScript = pkgs.writeShellApplication {
-    name = "load-secrets";
-    runtimeInputs = [
-      pkgs.openbao
-      pkgs.jq
-    ];
-    text = builtins.readFile ./scripts/load-secrets.sh;
-  };
+  cfg = config.scottylabs.secrets;
 in
 {
-  options.scottylabs = {
-    team = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = "Team name for fetching secrets from secrets/<team>/dev/env";
+  options.scottylabs.secrets = {
+    enable = lib.mkEnableOption "secretspec integration for local secret resolution";
+
+    host = lib.mkOption {
+      type = lib.types.str;
+      default = "secrets2.scottylabs.org";
+      description = "OpenBao server hostname";
     };
 
-    bao.addr = lib.mkOption {
+    profile = lib.mkOption {
       type = lib.types.str;
-      default = "https://secrets2.scottylabs.org";
-      description = "OpenBao server address";
+      default = "dev";
+      description = "secretspec profile for local development";
     };
   };
 
-  config = lib.mkIf (cfg.team != null) {
-    packages = [ loadSecretsScript ];
+  config = lib.mkIf (config.scottylabs.enable && cfg.enable) {
+    packages = [ pkgs.secretspec pkgs.openbao ];
+
+    env = {
+      BAO_ADDR = "https://${cfg.host}";
+      SECRETSPEC_PROVIDER = "vault://${cfg.host}/secret";
+      SECRETSPEC_PROFILE = cfg.profile;
+    };
 
     enterShell = ''
-      load-secrets "${cfg.team}" "${cfg.bao.addr}"
-      if [ -f .env ]; then
-        set -a
-        source .env
-        set +a
+      if [ -f secretspec.toml ]; then
+        if ! secretspec check 2>/dev/null; then
+          echo "Secrets not loaded. Run 'bao login -method=oidc' then 'secretspec check' to set up secrets."
+        fi
       fi
     '';
   };
