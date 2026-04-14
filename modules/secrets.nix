@@ -26,7 +26,6 @@ in
     env.BAO_ADDR = "https://${cfg.host}";
 
     secretspec = {
-      enable = true;
       provider = "vault://${cfg.host}/secret";
       profile = cfg.profile;
     };
