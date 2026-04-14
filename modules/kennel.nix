@@ -32,11 +32,6 @@ in
     sites = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
-          package = lib.mkOption {
-            type = lib.types.package;
-            description = "Nix derivation producing the static site files";
-          };
-
           spa = lib.mkOption {
             type = lib.types.bool;
             default = false;
