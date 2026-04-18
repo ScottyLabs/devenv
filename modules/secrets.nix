@@ -21,7 +21,7 @@ in
   };
 
   config = lib.mkIf (config.scottylabs.enable && cfg.enable) {
-    packages = [ pkgs.openbao ];
+    packages = [ pkgs.openbao pkgs.secretspec ];
 
     env.BAO_ADDR = "https://${cfg.host}";
 
