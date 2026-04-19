@@ -57,6 +57,16 @@ in
   };
 
   config = lib.mkIf config.scottylabs.enable {
-    scottylabs.kennel.config = pkgs.writeTextDir "kennel.json" kennelConfigJSON;
+    scottylabs.kennel.config =
+      let
+        secretspecPath = /${config.devenv.root}/secretspec.toml;
+        hasSecretspec = builtins.pathExists secretspecPath;
+      in
+      pkgs.runCommand "kennel-config" { } (''
+        mkdir -p $out
+        echo '${kennelConfigJSON}' > $out/kennel.json
+      '' + lib.optionalString hasSecretspec ''
+        cp ${secretspecPath} $out/secretspec.toml
+      '');
   };
 }
