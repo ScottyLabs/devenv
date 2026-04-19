@@ -26,7 +26,11 @@ in
 
     git-hooks.hooks.oxlint = {
       enable = true;
-      settings.fix = [ "safe" "suggestions" "dangerously" ];
+      description = "A fast linter for JavaScript and TypeScript";
+      package = pkgs.oxlint;
+      entry = "${lib.getExe pkgs.oxlint} --fix --fix-suggestions --fix-dangerously";
+      files = "\\.(js|cjs|mjs|jsx|ts|mts|cts|tsx)$";
+      language = "system";
     };
   };
 }
