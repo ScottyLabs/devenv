@@ -12,6 +12,7 @@ in
     ./postgres.nix
     ./sqlite.nix
     ./secrets.nix
+    ./valkey.nix
   ];
 
   options.scottylabs = {
