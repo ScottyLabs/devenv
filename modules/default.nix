@@ -5,6 +5,7 @@ let
 in
 {
   imports = [
+    ./cachix.nix
     ./claude.nix
     ./kennel.nix
     ./rust.nix
