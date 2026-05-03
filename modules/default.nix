@@ -9,6 +9,7 @@ in
     ./kennel.nix
     ./rust.nix
     ./bun.nix
+    ./keycloak.nix
     ./postgres.nix
     ./sqlite.nix
     ./secrets.nix
