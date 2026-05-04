@@ -9,23 +9,15 @@ in
       type = lib.types.bool;
       default = true;
       description = ''
-        Push builds to the `scottylabs` cachix cache. The auth token
-        is read from OpenBao at `secret/shared/cachix` on shell entry.
+        Push builds to the `scottylabs` cachix cache. Each developer
+        must run this once, from inside any ScottyLabs devenv shell:
+        `cachix authtoken $(bao kv get -field=CACHIX_AUTH_TOKEN secret/shared/cachix)`.
+        Requires a prior `bao login -method=oidc`.
       '';
     };
   };
 
   config = lib.mkIf (config.scottylabs.enable && cfg.push) {
-    scottylabs.secrets.enable = lib.mkDefault true;
-
-    enterShell = ''
-      if token=$(bao kv get -field=CACHIX_AUTH_TOKEN secret/shared/cachix 2>/dev/null); then
-        export CACHIX_AUTH_TOKEN="$token"
-      else
-        echo "warning: could not read CACHIX_AUTH_TOKEN from OpenBao; cachix push will fail. Run 'bao login -method=oidc' if not authenticated." >&2
-      fi
-    '';
-
     cachix.push = "scottylabs";
   };
 }
