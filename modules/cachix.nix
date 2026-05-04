@@ -22,7 +22,7 @@ in
       if token=$(bao kv get -field=CACHIX_AUTH_TOKEN secret/shared/cachix 2>/dev/null); then
         export CACHIX_AUTH_TOKEN="$token"
       else
-        echo "warning: could not read CACHIX_AUTH_TOKEN from OpenBao; cachix push will fail. Run 'bao login -oidc' if not authenticated." >&2
+        echo "warning: could not read CACHIX_AUTH_TOKEN from OpenBao; cachix push will fail. Run 'bao login -method=oidc' if not authenticated." >&2
       fi
     '';
 
