@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ pkgs, lib, config, ... }:
 
 let
   cfg = config.scottylabs.cachix;
@@ -18,6 +18,7 @@ in
   };
 
   config = lib.mkIf (config.scottylabs.enable && cfg.push) {
+    packages = [ pkgs.cachix ];
     cachix.push = "scottylabs";
   };
 }
